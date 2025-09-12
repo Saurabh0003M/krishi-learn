@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Krishi Learn Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --accent-color: #A5D6A7;
+      --bg-color: #f9fff9;
+      --token-color: #FFD700;
+      --money-color: #009688;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: #333;
+    }
+
+    .navbar {
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .token-counter {
+      background: var(--token-color);
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .token-counter img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Section Navigation */
+    .section-nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 64px;
+      z-index: 999;
+    }
+
+    .section-nav button {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      cursor: pointer;
+    }
+
+    .section {
+      padding: 2rem;
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Product Cards (Shop Section) */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+    }
+
+    .product-card h4 {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .price {
+      font-weight: bold;
+      margin: 0.5rem 0;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .token-price {
+      background: var(--token-color);
+      color: #333;
+    }
+
+    .money-price {
+      background: var(--money-color);
+      color: white;
+    }
+
+    .redeem-btn {
+      margin-top: auto;
+      background: var(--primary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .redeem-btn:hover {
+      background: #388E3C;
+    }
+
+    /* Crop Detection */
+    .upload-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .upload-box input[type="file"] {
+      margin: 1rem 0;
+    }
+
+    .learning {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .learning ul {
+      margin-top: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    .learning li {
+      margin-bottom: 0.75rem;
+    }
+
+    .weather-box {
+      max-width: 400px;
+      margin: auto;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 600px) {
+      .section-nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">🌾 Krishi Learn</div>
+    <div class="token-counter">
+      <img src="https://cdn-icons-png.flaticon.com/512/6681/6681925.png" alt="token" />
+      <span id="tokenCount">120</span> Tokens
+    </div>
+  </div>
+
+  <!-- Section Navigation -->
+  <div class="section-nav">
+    <button onclick="switchSection('shop')">🛍️ Shop</button>
+    <button onclick="switchSection('detect')">🌱 Crop Detection</button>
+    <button onclick="switchSection('learn')">📘 Learn</button>
+    <button onclick="switchSection('weather')">🌤️ Weather</button>
+  </div>
+
+  <!-- Shop Section -->
+  <div class="section active" id="shop">
+    <h2>🛒 Redeem Products</h2>
+    <div class="products">
+      <div class="product-card">
+        <img src="https://humicfactory.com/assets/images/products/1718167000N3QwnNC4.webp" alt="Tractor Toy"/>
+        <h4>Fertilizer</h4>
+        <div class="price token-price">50 Tokens or ₹500</div>
+        <button class="redeem-btn" onclick="redeem('Mini Tractor Model', 50)">Redeem</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://img.icons8.com/emoji/96/seedling.png" alt="Fertilizer"/>
+        <h4>Organic Fertilizer</h4>
+        <div class="price money-price">₹299</div>
+        <button class="redeem-btn">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crop Detection Section -->
+  <div class="section" id="detect">
+    <h2>🌱 Crop Disease Detection</h2>
+    <div class="upload-box">
+      <p>Select a photo of your crop to analyze for disease:</p>
+      <input type="file" id="cropImage" accept="image/*" />
+      <button class="redeem-btn" onclick="uploadCropImage()">Upload</button>
+      <p id="detectionResult" style="margin-top:1rem;"></p>
+    </div>
+  </div>
+
+  <!-- Learn Section -->
+  <div class="section" id="learn">
+    <h2>📘 Farming Tips & Learning</h2>
+    <div class="learning">
+      <ul>
+        <li><strong>Tip 1:</strong> Rotate your crops every season to maintain soil health.</li>
+        <li><strong>Tip 2:</strong> Use drip irrigation to conserve water.</li>
+        <li><strong>Tip 3:</strong> Regularly check crops for pests and diseases.</li>
+        <li><strong>Tip 4:</strong> Organic compost improves yield and soil fertility.</li>
+      </ul>
+
+
+
+    </div>
+  </div>
+
+  <!-- Weather Section -->
+  <div class="section" id="weather">
+    <h2>🌤️ Local Weather (Coming Soon)</h2>
+    <div class="weather-box">
+      <p>Weather integration coming soon!</p>
+      <p>Stay updated on rainfall, temperature, and ideal farming times.</p>
+      <!-- You can later use an API like OpenWeatherMap here -->
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    let tokenCount = 120;
+
+    function redeem(productName, cost) {
+      if (tokenCount >= cost) {
+        tokenCount -= cost;
+        document.getElementById('tokenCount').textContent = tokenCount;
+        alert(`🎉 You redeemed "${productName}" for ${cost} Tokens!`);
+      } else {
+        alert("⚠️ Not enough tokens to redeem this item.");
+      }
+    }
+
+    function switchSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function uploadCropImage() {
+      const input = document.getElementById('cropImage');
+      const result = document.getElementById('detectionResult');
+
+      if (!input.files.length) {
+        result.textContent = '⚠️ Please select an image first.';
+        return;
+      }
+
+      // Simulated detection result
+      result.textContent = '🧪 Analyzing image...';
+      setTimeout(() => {
+        result.textContent = '✅ No disease detected. Your crop looks healthy!';
+        // You can replace this with a real AI model/API later.
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
